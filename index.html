@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B6914">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MICA">
+    <link rel="apple-touch-icon" href="grafika/Logo.png">
     <title>Mica — Devet žetona</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -693,6 +698,169 @@
             .mode-selector {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* ===================================================
+           MOBILNI DIZAJN — max-width: 768px
+           Desktop stilovi su nepromijenjeni iznad ovog bloka.
+           =================================================== */
+        @media (max-width: 768px) {
+
+            /* --- Globals --- */
+            body { overflow-x: hidden; }
+
+            /* Touch bez 300 ms kašnjenja na svim dugmadima */
+            button { touch-action: manipulation; }
+
+            /* Canvas — direktni touch odgovor */
+            canvas { touch-action: none; }
+
+            /* ---- Glavni meni ---- */
+            .menu-logo { width: 80px; height: 80px; margin-top: 16px; }
+
+            .title { font-size: 2em; letter-spacing: 4px; }
+            .subtitle { font-size: 0.7em; letter-spacing: 3px; }
+
+            #startScreen,
+            #levelSelectScreen {
+                gap: 14px;
+                padding: 14px 12px;
+            }
+
+            /* Kartice na glavnom meniju — pune širine */
+            .mode-selector { gap: 10px; margin: 8px 0; }
+            .mode-card {
+                padding: 14px 16px;
+                min-width: unset;
+                width: 100%;
+            }
+
+            /* ---- Stranica sa nivoima ---- */
+            #levelSelectScreen { gap: 10px; }
+            .level-list { padding-bottom: 4px; }
+            .level-list .mode-card { padding: 10px 14px; }
+            .level-icon { width: 44px; height: 44px; margin-bottom: 4px; }
+            .level-list .mode-card h3 { font-size: 0.82em; }
+            .level-list .mode-card p  { font-size: 0.7em; }
+
+            /* ---- Game screen — kolona umjesto reda ---- */
+            #gameScreen {
+                flex-direction: column;
+                align-items: center;
+                padding: 6px 8px;
+                gap: 4px;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            /* Tray kolone postaju horizontalni redovi */
+            .tray-column {
+                flex-direction: row;
+                height: auto;
+                width: 100%;
+                max-width: 95vw;
+                padding: 4px 6px;
+                gap: 5px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            /* Sakrij label kolone — ne treba na mobilnom */
+            .tray-column-label { display: none; }
+
+            /* Žetoni u redu */
+            .tray-pieces {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+
+            /* Manji žetoni za touch */
+            .placement-side-piece { width: 30px; height: 30px; }
+
+            /* Statistike ispod žetona */
+            .tray-stats {
+                width: 100%;
+                text-align: center;
+                white-space: normal;
+                font-size: 0.66rem;
+                margin-top: 2px;
+            }
+
+            /* Srednja kolona — tabla */
+            .board-column {
+                width: 100%;
+                max-width: 95vw;
+                height: auto;
+                padding: 4px;
+                gap: 5px;
+            }
+
+            /* Canvas skalirano na ekran */
+            .canvas-wrapper {
+                width: 95vw;
+                max-width: 520px;
+                height: 95vw;
+                max-height: 520px;
+            }
+            canvas {
+                width: 95vw;
+                max-width: 520px;
+                height: 95vw;
+                max-height: 520px;
+            }
+
+            /* Scoreboard ispod dugmeta naziva nivoa — dovoljno margine da se ne preklapaju */
+            .scoreboard {
+                font-size: 14px;
+                padding: 6px 10px;
+                letter-spacing: 0.5px;
+                margin-top: 38px; /* ostavlja mjesta za apsolutno pozicionirani .level-indicator */
+            }
+
+            /* Status poruke */
+            .message { font-size: 0.8em; min-height: 18px; }
+
+            /* Status redovi ispod table */
+            .quake-status,
+            .rotation-status,
+            .portal-status,
+            .fog-status,
+            .bomb-status { font-size: 0.78rem; }
+
+            /* Dugmad ispod table — veća za touch */
+            .board-buttons { flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+            .board-buttons button {
+                padding: 14px 16px;
+                font-size: 0.8em;
+                flex: 1;
+                min-width: 72px;
+            }
+
+            /* Badge moda — malo manji */
+            .level-indicator {
+                font-size: 0.6em;
+                padding: 4px 9px;
+                top: 8px;
+                left: 8px;
+            }
+
+            /* Mute dugme vidljivo na mobilnom */
+            .mute-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px 14px;
+                font-size: 1rem;
+            }
+
+            /* Modalni prozori prilagođeni ekranu */
+            .modal {
+                min-width: min(90vw, 360px);
+                width: 90vw;
+                padding: 20px 16px;
+            }
+            .modal-buttons { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -3256,6 +3424,11 @@
                 _origBombExpiry();
             };
         })();
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
     </script>
 </body>
 </html>
