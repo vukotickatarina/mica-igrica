@@ -866,108 +866,103 @@
             .level-list .mode-card h3 { font-size: 0.82em; }
             .level-list .mode-card p  { font-size: 0.7em; }
 
-            /* ---- Game screen — kolona umjesto reda ---- */
+            /* ===== EKRAN IGRE — MOBILNI REDIZAJN ===== */
+            /* board-column postaje phantom: djeca postaju direktni flex-items #gameScreen-a */
+            .board-column { display: contents; }
+
+            /* Redosljed flex stavki odozgo prema dole */
+            .scoreboard     { order: 10; }
+            #blueTray       { order: 20; }
+            .canvas-wrapper { order: 30; }
+            #redTray        { order: 40; }
+            .quake-status, .rotation-status, .portal-status,
+            .fog-status, .bomb-status { order: 45; }
+            .message        { order: 50; }
+            .board-buttons  { order: 60; }
+
+            /* Gamescreen — flex kolona, 100vh, bez skrolanja */
             #gameScreen {
                 flex-direction: column;
                 align-items: center;
-                padding: 6px 8px;
-                gap: 4px;
-                overflow-y: auto;
-                overflow-x: hidden;
+                padding: 4px 8px;
+                gap: 0;
+                overflow: hidden;
+                height: 100vh;
             }
 
-            /* Tray kolone postaju horizontalni redovi */
-            .tray-column {
-                flex-direction: row;
-                height: auto;
+            /* 2. Scoreboard */
+            .scoreboard {
                 width: 100%;
-                max-width: 95vw;
-                padding: 4px 6px;
-                gap: 5px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            /* Sakrij label kolone — ne treba na mobilnom */
-            .tray-column-label { display: none; }
-
-            /* Žetoni u redu */
-            .tray-pieces {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 5px;
-            }
-
-            /* Manji žetoni za touch */
-            .placement-side-piece { width: 30px; height: 30px; }
-
-            /* Statistike ispod žetona */
-            .tray-stats {
-                width: 100%;
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+                margin: 4px 0;
+                margin-top: 28px;
+                padding: 2px 4px;
                 text-align: center;
-                white-space: normal;
-                font-size: 0.66rem;
-                margin-top: 2px;
             }
 
-            /* Srednja kolona — tabla */
-            .board-column {
+            /* 3+5. Tray kolone — horizontalni red piona */
+            #blueTray, #redTray {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
                 width: 100%;
-                max-width: 95vw;
                 height: auto;
-                padding: 4px;
-                gap: 5px;
+                padding: 2px 0;
+                gap: 0;
             }
+            .tray-column-label { display: none; }
+            .tray-stats { display: none; }
+            .tray-pieces {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 4px;
+                padding: 2px 0;
+            }
+            .placement-side-piece { width: 28px; height: 28px; }
 
-            /* Canvas skalirano na ekran bez horizontalnog overflow-a */
+            /* 4. Canvas — kvadratni, max 55vh */
             .canvas-wrapper {
-                width: calc(100vw - 16px);
-                max-width: 520px;
-                height: calc(100vw - 16px);
-                max-height: 520px;
+                width: min(calc(100vw - 16px), 55vh);
+                height: min(calc(100vw - 16px), 55vh);
+                margin: 4px auto;
+                position: relative;
             }
             canvas {
-                width: calc(100vw - 16px);
-                max-width: 520px;
-                height: calc(100vw - 16px);
-                max-height: 520px;
+                width: min(calc(100vw - 16px), 55vh);
+                height: min(calc(100vw - 16px), 55vh);
+                max-width: calc(100vw - 16px);
+                max-height: 55vh;
+                display: block;
             }
 
-            /* Scoreboard — kompaktan na mobilnom */
-            .scoreboard {
-                font-size: 11px;
-                padding: 3px 6px;
-                letter-spacing: 0;
-                margin-top: 30px;
+            /* 6. Status tekst */
+            .message {
+                font-size: 0.8rem;
+                margin: 4px 0;
+                text-align: center;
+                width: 100%;
+                min-height: 14px;
             }
+            .quake-status, .rotation-status, .portal-status,
+            .fog-status, .bomb-status { font-size: 0.72rem; }
 
-            /* Status poruke */
-            .message { font-size: 0.8em; min-height: 18px; }
-
-            /* Status redovi ispod table */
-            .quake-status,
-            .rotation-status,
-            .portal-status,
-            .fog-status,
-            .bomb-status { font-size: 0.78rem; }
-
-            /* Dugmad ispod table — veća za touch */
-            .board-buttons { flex-wrap: wrap; gap: 6px; margin-top: 2px; }
-            .board-buttons button {
-                padding: 14px 16px;
-                font-size: 0.8em;
-                flex: 1;
-                min-width: 72px;
+            /* 7. Dugmad — jedan red */
+            .board-buttons {
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
+                width: 100%;
+                margin: 2px 0;
+                flex-wrap: nowrap;
             }
+            .board-buttons button { flex: 1; padding: 8px; font-size: 0.75rem; min-width: unset; }
 
-            /* Badge moda — malo manji */
-            .level-indicator {
-                font-size: 0.6em;
-                padding: 4px 9px;
-                top: 8px;
-                left: 8px;
-            }
+            /* 1. Level badge */
+            .level-indicator { font-size: 0.7rem; padding: 4px 8px; top: 4px; left: 8px; }
 
             /* Mute dugme vidljivo na mobilnom */
             .mute-btn {
@@ -984,14 +979,6 @@
                 padding: 20px 16px;
             }
             .modal-buttons { flex-wrap: wrap; }
-
-            /* ---- Pioni IZNAD table (CSS order) ---- */
-            #blueTray  { order: 0; }
-            #redTray   { order: 1; }
-            .board-column { order: 2; padding: 0 8px; }
-
-            /* Srednja kolona bez horizontalnog overflow-a */
-            .board-column { width: 100%; max-width: 100vw; box-sizing: border-box; }
 
             /* ---- Ekran za unos imena (1v1) ---- */
             #playerNamesScreen { padding: 14px 0; gap: 10px; }
