@@ -3681,7 +3681,9 @@
         }
 
         function addWin(winner) {
-            const winnerName = playerNames[winner];
+            const winnerName = gameType === 'vsai'
+                ? (winner === 'red' ? 'Računar' : (localStorage.getItem('micaPlayerName') || playerNames.blue || 'Bijeli'))
+                : playerNames[winner];
             let entry = leaderboardData.find(e => e.name === winnerName);
             if (!entry) {
                 entry = { name: winnerName, wins: 0, games: 0, mills: 0 };
