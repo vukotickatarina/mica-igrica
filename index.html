@@ -29,7 +29,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             color: #f0f0f0;
             overflow: hidden;
         }
@@ -49,18 +49,29 @@
         }
 
         html, body {
-            height: 100%;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #startScreen {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 24px;
+            gap: 8px;
             background: #0a0a0a;
-            padding: 20px;
-            height: 100%;
+            padding: 16px 20px;
+            height: 100vh;
+            overflow: hidden;
         }
+
+        /* Main menu — kompaktni layout koji staje na jedan ekran */
+        #startScreen .menu-logo  { height: 45px; width: auto; margin: 0 auto; }
+        #startScreen .title      { font-size: 1.8rem; letter-spacing: 6px; margin: 4px 0; }
+        #startScreen .subtitle   { font-size: 0.65rem; letter-spacing: 3px; margin: 4px 0; }
+        #startScreen .mode-selector { gap: 6px; margin: 0; }
+        #startScreen .mode-card  { padding: 10px 20px; min-width: unset; }
+        #startScreen .mode-card h3 { font-size: 0.82rem; margin-bottom: 3px; letter-spacing: 2px; }
+        #startScreen .mode-card p  { font-size: 0.70rem; line-height: 1.4; }
 
         #levelSelectScreen {
             flex-direction: column;
@@ -694,6 +705,118 @@
         }
         .mute-btn:hover { background: #1a1a1a; }
 
+        #playerNamesScreen {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            background: #0a0a0a;
+            padding: 20px;
+        }
+
+        .name-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .name-field label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            color: #888888;
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+        }
+
+        .name-field input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0a0a0a;
+            border: 1px solid #c9a84c;
+            color: #f0f0f0;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+
+        .name-field input:focus {
+            box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.3);
+        }
+
+        .name-field input::placeholder { color: #444444; }
+
+        @media (max-width: 768px) {
+            #playerNamesScreen { gap: 14px; padding: 14px 12px; }
+            .name-input-group { max-width: 95vw; }
+        }
+
+        /* Profil dugme — gornji desni ugao početnog ekrana */
+        .profile-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #111111;
+            border: 1.5px solid #c9a84c;
+            color: #c9a84c;
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 10;
+            box-shadow: none;
+            padding: 0;
+        }
+        .profile-btn:hover { background: #1a1a1a; }
+
+        /* VS AI Difficulty screen cards */
+        .diff-sel-btn {
+            flex: 1;
+            padding: 14px 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            letter-spacing: 2px;
+            background: #111111;
+            border: 1px solid #333333;
+            color: #888888;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .diff-sel-btn:hover { border-color: #c9a84c; color: #c9a84c; background: #111111; }
+        .diff-sel-btn.diff-sel-active {
+            background: #c9a84c !important;
+            color: #0a0a0a !important;
+            border-color: #c9a84c !important;
+        }
+
+        .diff-btn {
+            background: #0a0a0a;
+            color: #666;
+            border: 1px solid #2a2a2a;
+            padding: 7px 16px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .diff-btn:hover { border-color: #c9a84c; color: #c9a84c; }
+        .diff-btn.diff-active { background: #c9a84c !important; color: #0a0a0a !important; border-color: #c9a84c !important; }
+
         @media (max-width: 1400px) {
             .mode-selector {
                 grid-template-columns: 1fr;
@@ -862,11 +985,46 @@
             }
             .modal-buttons { flex-wrap: wrap; }
         }
+
+        /* ===== KOMPAKTNI JEDNOSKRINSKI LAYOUT ===== */
+
+        /* --- Ekran igre --- */
+        #gameScreen { padding: 6px 12px; gap: 8px; }
+        #gameScreen .scoreboard { font-size: 0.8rem; padding: 2px 0; letter-spacing: 2px; }
+        #gameScreen .board-column { gap: 4px; padding: 4px; }
+        #gameScreen .board-buttons { gap: 6px; }
+        #gameScreen .board-buttons button { padding: 8px 16px; font-size: 0.75rem; }
+        #gameScreen .message { font-size: 0.78rem; min-height: 16px; }
+        #gameScreen .tray-stats { font-size: 0.72rem; margin-top: 2px; line-height: 1.4; }
+        #gameScreen .tray-column { gap: 6px; padding: 6px 4px; }
+        #gameScreen .ai-comment { font-size: 0.78rem; min-height: unset; padding: 4px 0; margin: 2px auto; }
+        .canvas-wrapper {
+            width: min(520px, calc(100vh - 180px));
+            height: min(520px, calc(100vh - 180px));
+        }
+        canvas {
+            width: min(520px, calc(100vh - 180px));
+            height: min(520px, calc(100vh - 180px));
+        }
+
+        /* --- Ekran za nivoe --- */
+        #levelSelectScreen { gap: 10px; padding: 14px 20px; }
+        .level-list .mode-card { padding: 10px 16px; }
+        .level-list .mode-card h3 { font-size: 0.82rem; margin-bottom: 3px; }
+        .level-list .mode-card p { font-size: 0.70rem; }
+        .level-icon { height: 32px; width: auto; max-height: 32px; }
+
+        /* --- Ekran za unos imena (1v1) --- */
+        #playerNamesScreen { gap: 12px; padding: 14px 20px; }
+        .name-input-group { gap: 12px; }
+        .name-field input { padding: 8px 12px; font-size: 0.88em; }
+        .name-field label { margin-bottom: 3px; }
     </style>
 </head>
 <body>
     <!-- POČETNI EKRAN -->
     <div id="startScreen" class="screen active">
+        <button class="profile-btn" id="profileBtn" onclick="openProfileModal()" title="Postavi svoje ime">B</button>
         <img src="grafika/Logo.png" alt="MICA logo" class="menu-logo">
         <div class="title">MICA</div>
         <div class="subtitle">IZABERI NAČIN IGRE</div>
@@ -883,11 +1041,65 @@
                 <h3>NIVOI</h3>
                 <p>Specijalni modovi: Bomba, Magla, Portal</p>
             </div>
+            <div class="mode-card" onclick="openLeaderboardFromMenu()">
+                <h3>TABELA</h3>
+                <p>Rang lista najboljih igrača</p>
+            </div>
         </div>
-        <button class="settings-btn" onclick="openSettings()">POSTAVKE</button>
     </div>
 
-    <div id="levelSelectScreen" class="screen">
+    <!-- UNOS IMENA IGRAČA — prikazuje se samo za 1 VS 1 mod -->
+    <div id="playerNamesScreen" class="screen">
+        <img src="grafika/Logo.png" alt="MICA logo" class="menu-logo" style="width:70px;height:70px;margin:0;">
+        <div class="title" style="font-size: 2.2em;">1 VS 1</div>
+        <div class="subtitle">UNESI IMENA IGRAČA</div>
+        <div class="name-input-group">
+            <div class="name-field">
+                <label>PRVI IGRAČ — BIJELI</label>
+                <input id="playerNameBlue" type="text" placeholder="Bijeli" maxlength="20" autocomplete="off">
+            </div>
+            <div class="name-field">
+                <label>DRUGI IGRAČ — CRVENI</label>
+                <input id="playerNameRed" type="text" placeholder="Crveni" maxlength="20" autocomplete="off">
+            </div>
+            <button onclick="startLocalGame()" style="margin-top:6px;">ZAPOČNI IGRU</button>
+            <button class="settings-btn" onclick="goBackFromNames()">← NAZAD</button>
+        </div>
+    </div>
+
+    <!-- VS AI — odabir težine (overlay modal) -->
+    <div id="difficultyOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.82);z-index:200;align-items:center;justify-content:center;">
+        <div style="background:#111111;border:1px solid #c9a84c;border-radius:8px;padding:32px;width:100%;max-width:400px;position:relative;margin:0 16px;box-shadow:0 4px 24px rgba(0,0,0,0.8);">
+            <button onclick="goBackFromVsAIDifficulty()" title="Nazad"
+                style="position:absolute;top:14px;right:14px;width:28px;height:28px;background:transparent;border:none;color:#555555;font-size:1.15em;cursor:pointer;padding:0;line-height:1;transition:color 0.2s;"
+                onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#555555'">✕</button>
+            <h2 style="font-family:'Cinzel',serif;color:#c9a84c;text-align:center;margin:0 0 24px;font-size:1.0em;letter-spacing:4px;font-weight:600;">ODABERI TEŽINU</h2>
+            <div style="display:flex;gap:10px;margin-bottom:14px;">
+                <button id="sel-easy"   class="diff-sel-btn" onclick="selectDifficulty('easy')">LAKA</button>
+                <button id="sel-medium" class="diff-sel-btn" onclick="selectDifficulty('medium')">SREDNJA</button>
+                <button id="sel-hard"   class="diff-sel-btn" onclick="selectDifficulty('hard')">TEŠKA</button>
+            </div>
+            <div id="diffDescription" style="color:#888888;font-size:0.8em;text-align:center;min-height:36px;line-height:1.6;margin-bottom:22px;"></div>
+            <button onclick="startVsAIWithDifficulty()" style="width:100%;">ZAPOČNI IGRU</button>
+        </div>
+    </div>
+
+    <!-- Izbor načina igre za specijalne nivoe -->
+    <div id="levelModeOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.82);z-index:200;align-items:center;justify-content:center;">
+        <div style="background:#111111;border:1px solid #c9a84c;border-radius:8px;padding:32px;width:100%;max-width:340px;position:relative;margin:0 16px;box-shadow:0 4px 24px rgba(0,0,0,0.8);">
+            <button onclick="closeLevelModeOverlay()" title="Nazad"
+                style="position:absolute;top:14px;right:14px;width:28px;height:28px;background:transparent;border:none;color:#555555;font-size:1.15em;cursor:pointer;padding:0;line-height:1;transition:color 0.2s;"
+                onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#555555'">✕</button>
+            <h2 id="levelModeTitle" style="font-family:'Cinzel',serif;color:#c9a84c;text-align:center;margin:0 0 20px;font-size:0.95em;letter-spacing:3px;font-weight:600;"></h2>
+            <div style="display:flex;gap:10px;margin-bottom:12px;">
+                <button onclick="startLevelVsAI()" style="flex:1;">VS AI</button>
+                <button onclick="startLevel1v1()" style="flex:1;">1 VS 1</button>
+            </div>
+            <button class="settings-btn" onclick="closeLevelModeOverlay()" style="width:100%;margin-top:4px;">← NAZAD</button>
+        </div>
+    </div>
+
+<div id="levelSelectScreen" class="screen">
         <div class="title" style="font-size: 2.6em;">NIVOI</div>
         <div class="subtitle">ODABERI SPECIJALNI MOD</div>
         <div class="level-list">
@@ -1014,32 +1226,31 @@
                     <th>Mjesto</th>
                     <th>Igrač</th>
                     <th>Pobjede</th>
+                    <th>Mice</th>
                     <th>Partije</th>
-                    <th>Win Rate</th>
                 </tr>
             </thead>
             <tbody id="leaderboardBody">
-                <tr><td colspan="5" style="text-align: center; color: #888888;">Učitavanje...</td></tr>
+                <tr><td colspan="5" style="text-align: center; color: #888888; padding: 24px;">Još nema rezultata</td></tr>
             </tbody>
         </table>
-        <button onclick="toggleLeaderboard()">← NAZAD</button>
+        <div style="display:flex; gap:10px;">
+            <button onclick="toggleLeaderboard()">← NAZAD</button>
+            <button onclick="clearLeaderboard()" style="background:#111;color:#555;border-color:#333;">OBRIŠI</button>
+        </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
     <div class="modal-overlay" id="modalOverlay"></div>
-    <div class="modal" id="settingsModal">
-        <h2>POSTAVKE</h2>
-        <div>
-            <label style="color: #888888; font-size: 0.85em; letter-spacing: 1px;">Anthropic API ključ:</label>
-            <input type="password" id="apiKey" placeholder="sk-ant-...">
+    <div class="modal" id="profileModal" style="min-width:280px;max-width:340px;">
+        <h2>PROFIL IGRAČA</h2>
+        <div class="name-field" style="margin-top:4px;">
+            <label>TVOJE IME</label>
+            <input id="profileNameInput" type="text" placeholder="Bijeli" maxlength="20" autocomplete="off"
+                   onkeydown="if(event.key==='Enter') saveProfileName()">
         </div>
-        <div>
-            <label style="color: #888888; font-size: 0.85em; letter-spacing: 1px;">Ime igrača:</label>
-            <input type="text" id="playerName" placeholder="Unesite vaše ime">
-        </div>
-        <div class="modal-buttons">
-            <button onclick="saveSettings()">SPREMI</button>
-            <button onclick="closeSettings()">ZATVORI</button>
+        <div class="modal-buttons" style="margin-top:20px;">
+            <button onclick="saveProfileName()">SAČUVAJ</button>
+            <button onclick="closeProfileModal()">ODUSTANI</button>
         </div>
     </div>
     <div class="modal" id="levelInstructionModal">
@@ -1065,9 +1276,19 @@
         <div id="gameOverMessage" style="color: #f0f0f0; font-size: 1.05em; text-align: center; margin: 24px 0; line-height: 1.6; font-family: 'Cinzel', serif; letter-spacing: 1px;"></div>
         <div class="modal-buttons" style="justify-content: center;">
             <button onclick="rematch()">Odigraj revanš</button>
-            <button onclick="goToMainMenu()">Glavni izbornik</button>
+            <button onclick="goToMainMenu()">Glavni meni</button>
+        </div>
+        <div id="aiDifficultySection" style="display:none; margin-top:20px; border-top:1px solid #1e1e1e; padding-top:16px; text-align:center;">
+            <div style="font-family:'Cinzel',serif; font-size:0.68em; color:#888; letter-spacing:3px; margin-bottom:10px;">TEŽINA ZA SLJEDEĆU IGRU</div>
+            <div style="display:flex; gap:8px; justify-content:center;">
+                <button id="diff-easy" class="diff-btn" onclick="setAIDifficulty('easy')">LAKA</button>
+                <button id="diff-medium" class="diff-btn diff-active" onclick="setAIDifficulty('medium')">SREDNJA</button>
+                <button id="diff-hard" class="diff-btn" onclick="setAIDifficulty('hard')">TEŠKA</button>
+            </div>
         </div>
     </div>
+
+    <canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:275;pointer-events:none;display:none;"></canvas>
 
     <div class="credit-badge">Krediti: <span id="credits">10</span></div>
 
@@ -1099,6 +1320,13 @@
             selectedTrayIndex: -1
         };
         let sessionScores = { blue: 0, red: 0 };
+        let sessionMillCounts = { blue: 0, red: 0 };
+        let playerNames = { blue: 'Bijeli', red: 'Crveni' };
+        let aiDifficulty = 'medium';
+        let confettiParticles = [];
+        let confettiEndTime = 0;
+        let confettiCanvas = null, confettiCtx = null;
+        let _leaderboardFromMenu = false;
         let aiThinkTimeout = null;
         let soundManager = {};
         let particles = [];
@@ -1196,6 +1424,11 @@
 
             updateScoreboardDisplay();
 
+            confettiCanvas = document.getElementById('confettiCanvas');
+            if (confettiCanvas) confettiCtx = confettiCanvas.getContext('2d');
+
+            updateProfileBtn();
+
             // Start animation loop only after canvas/ctx are ready
             animate();
         };
@@ -1256,11 +1489,14 @@
                 rotatingNow: false,        // NIVO: ROTIRAJUĆA TABLA — blocks input during animation
                 rotationOldBoard: null,    // NIVO: ROTIRAJUĆA TABLA — board snapshot for animation
                 rotationAnimStart: null,   // NIVO: ROTIRAJUĆA TABLA — animation start timestamp
+                millAnim: null,            // { mills:[[a,b,c],...], player, startAt } — mica flash
                 quakeCountdown: 6,         // NIVO: ZEMLJOTRES — moves until next earthquake
                 quakingNow: false,         // NIVO: ZEMLJOTRES — blocks input during shake animation
                 quakeGlow: [],             // NIVO: ZEMLJOTRES — [{ index, player, expiresAt }] post-quake glow
                 scoreAdded: false,
-                explodingBombs: []
+                explodingBombs: [],
+                aiLastMove: null,
+                aiRemovalHighlight: null
             };
 
             if (gameMode === 'bomb') {
@@ -1282,14 +1518,64 @@
                 document.getElementById('levelSelectScreen').classList.add('active');
                 return;
             }
+            if (type === 'local') {
+                pendingGameMode = 'classic';
+                document.getElementById('startScreen').classList.remove('active');
+                document.getElementById('playerNamesScreen').classList.add('active');
+                document.getElementById('playerNameBlue').value = '';
+                document.getElementById('playerNameRed').value = '';
+                return;
+            }
+            if (type === 'vsai') {
+                document.getElementById('difficultyOverlay').style.display = 'flex';
+                selectDifficulty(aiDifficulty);
+                return;
+            }
             pendingGameMode = 'classic';
             showInstructions('classic');
         }
 
+        function startLocalGame() {
+            const blueName = document.getElementById('playerNameBlue').value.trim() || 'Bijeli';
+            const redName  = document.getElementById('playerNameRed').value.trim()  || 'Crveni';
+            playerNames = { blue: blueName, red: redName };
+            document.getElementById('playerNamesScreen').classList.remove('active');
+            startGame(pendingGameMode || 'classic', 'local');
+        }
+
+        function goBackFromNames() {
+            document.getElementById('playerNamesScreen').classList.remove('active');
+            document.getElementById('startScreen').classList.add('active');
+        }
+
         function selectLevelMode(mode) {
-            pendingGameType = 'vsai'; // all levels are solo vs AI
             pendingGameMode = mode;
-            showInstructions(mode);
+            playerNames = { blue: 'Bijeli', red: 'Crveni' };
+            const titles = {
+                bomb: 'TEMPIRANA BOMBA', fog: 'MAGLA RATA',
+                portal: 'PORTAL', rotation: 'ROTIRAJUĆA TABLA', earthquake: 'ZEMLJOTRES'
+            };
+            document.getElementById('levelModeTitle').textContent = titles[mode] || mode.toUpperCase();
+            document.getElementById('levelModeOverlay').style.display = 'flex';
+        }
+
+        function startLevelVsAI() {
+            pendingGameType = 'vsai';
+            document.getElementById('levelModeOverlay').style.display = 'none';
+            showInstructions(pendingGameMode);
+        }
+
+        function startLevel1v1() {
+            pendingGameType = 'local';
+            document.getElementById('levelModeOverlay').style.display = 'none';
+            document.getElementById('levelSelectScreen').classList.remove('active');
+            document.getElementById('playerNamesScreen').classList.add('active');
+            document.getElementById('playerNameBlue').value = '';
+            document.getElementById('playerNameRed').value = '';
+        }
+
+        function closeLevelModeOverlay() {
+            document.getElementById('levelModeOverlay').style.display = 'none';
         }
 
         function showInstructions(mode) {
@@ -1330,15 +1616,16 @@
         }
 
         function closeAllModals() {
-            closeSettings();
             closeLevelInstructions();
             closeMillModal();
             closeGameOverModal();
+            closeProfileModal();
         }
 
         function startGame(mode, type = 'local') {
             gameMode = mode;
             gameType = type;
+            sessionMillCounts = { blue: 0, red: 0 };
             document.getElementById('levelIndicator').textContent =
                 mode === 'classic'    ? 'KLASIČNA' :
                 mode === 'bomb'       ? 'TEMPIRANA BOMBA' :
@@ -1358,6 +1645,8 @@
         function backToStart() {
             // Any manual navigation back to the main menu resets the session score
             sessionScores = { blue: 0, red: 0 };
+            sessionMillCounts = { blue: 0, red: 0 };
+            playerNames = { blue: 'Bijeli', red: 'Crveni' };
             sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
             document.getElementById('gameScreen').classList.remove('active');
             document.getElementById('levelSelectScreen').classList.remove('active');
@@ -1438,8 +1727,9 @@
                 if (gameState.fogReveal &&
                     gameState.fogReveal.index === index &&
                     Date.now() < gameState.fogReveal.expiresAt) return 'reveal';
-                // During removal phase show all opponent pieces as shadows so human can pick
-                if (gameState.waitingForRemoval && owner === 'red') return 'shadow';
+                // During removal phase show opponent pieces as shadows — only when human is choosing
+                if (gameState.waitingForRemoval && owner === 'red' &&
+                    (gameType !== 'vsai' || gameState.currentPlayer === 'blue')) return 'shadow';
                 // Adjacent to any human piece?
                 const adjToHuman = ADJACENCIES[index].some(adj => gameState.board[adj] === human);
                 if (adjToHuman) {
@@ -1448,7 +1738,12 @@
                 return 'fog';
             };
 
-            const removableIndices = gameState.waitingForRemoval ? getRemovablePieces(opponent) : [];
+            // Highlight removable pieces only when a human player must choose which piece to remove.
+            // In vsai mode that is only when blue (human) formed the mill.
+            // In local 1v1 mode both players are human so always show.
+            const humanMustChoose = gameState.waitingForRemoval &&
+                (gameType !== 'vsai' || gameState.currentPlayer === 'blue');
+            const removableIndices = humanMustChoose ? getRemovablePieces(opponent) : [];
 
             // NIVO: ROTIRAJUĆA TABLA — true when animation is running
             const isRotating = gameMode === 'rotation' && gameState.rotatingNow && gameState.rotationOldBoard;
@@ -1683,6 +1978,99 @@
                     ctx.fill();
                 });
             }
+
+            // ===== ANIMACIJA MICE — 3 zlatna pulsa u 600ms =====
+            if (gameState.millAnim) {
+                const elapsed = Date.now() - gameState.millAnim.startAt;
+                const DURATION = 600; // 3 pulsa × 200ms
+                if (elapsed >= DURATION) {
+                    gameState.millAnim = null;
+                } else {
+                    // Svaki puls traje 200ms; intenzitet prati sin(0→π) unutar svakog pulsa
+                    const pulsePhase = (elapsed % 200) / 200;
+                    const intensity  = Math.sin(pulsePhase * Math.PI); // 0→1→0
+
+                    gameState.millAnim.mills.forEach(mill => {
+                        const pts = mill.map(i => BOARD_POSITIONS[i]);
+
+                        // Zlatna linija kroz sva 3 čvora
+                        ctx.save();
+                        ctx.strokeStyle = `rgba(201, 168, 76, ${0.3 + intensity * 0.65})`;
+                        ctx.lineWidth   = 2 + intensity * 6;
+                        ctx.shadowColor = '#c9a84c';
+                        ctx.shadowBlur  = intensity * 18;
+                        ctx.lineCap     = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(pts[0][0], pts[0][1]);
+                        ctx.lineTo(pts[1][0], pts[1][1]);
+                        ctx.lineTo(pts[2][0], pts[2][1]);
+                        ctx.stroke();
+                        ctx.restore();
+
+                        // Zlatni prsten + uvećan prikaz na svakom čvoru
+                        mill.forEach(nodeIdx => {
+                            const pos = BOARD_POSITIONS[nodeIdx];
+                            ctx.save();
+                            ctx.shadowColor = '#c9a84c';
+                            ctx.shadowBlur  = intensity * 20;
+                            ctx.strokeStyle = `rgba(201, 168, 76, ${0.5 + intensity * 0.5})`;
+                            ctx.lineWidth   = 2 + intensity * 3;
+                            ctx.beginPath();
+                            ctx.arc(pos[0], pos[1], 17 + intensity * 8, 0, Math.PI * 2);
+                            ctx.stroke();
+                            ctx.restore();
+                        });
+                    });
+                }
+            }
+
+            // AI last move highlight — pulsing golden ring for 1.5s on the destination node
+            if (gameState.aiLastMove) {
+                const now = Date.now();
+                if (now < gameState.aiLastMove.expiresAt) {
+                    const hlPos = BOARD_POSITIONS[gameState.aiLastMove.index];
+                    const t = (gameState.aiLastMove.expiresAt - now) / 1500; // 1→0
+                    const pulse = 0.55 + Math.abs(Math.sin(now / 180)) * 0.45;
+                    const alpha = t * pulse;
+                    ctx.save();
+                    ctx.shadowColor = '#c9a84c';
+                    ctx.shadowBlur = 18 * t;
+                    ctx.strokeStyle = `rgba(201, 168, 76, ${alpha})`;
+                    ctx.lineWidth = 3 + pulse * 2;
+                    ctx.beginPath();
+                    ctx.arc(hlPos[0], hlPos[1], 22, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                } else {
+                    gameState.aiLastMove = null;
+                }
+            }
+
+            // AI removal highlight — fast golden pulse on the piece about to be removed (800ms)
+            if (gameState.aiRemovalHighlight) {
+                const now = Date.now();
+                if (now < gameState.aiRemovalHighlight.expiresAt) {
+                    const rhPos = BOARD_POSITIONS[gameState.aiRemovalHighlight.index];
+                    const pulse = 0.5 + Math.abs(Math.sin(now / 110)) * 0.5;
+                    ctx.save();
+                    ctx.shadowColor = '#c9a84c';
+                    ctx.shadowBlur = 20 * pulse;
+                    ctx.strokeStyle = `rgba(201, 168, 76, ${0.65 + pulse * 0.35})`;
+                    ctx.lineWidth = 2 + pulse * 3;
+                    ctx.beginPath();
+                    ctx.arc(rhPos[0], rhPos[1], 22, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                } else {
+                    gameState.aiRemovalHighlight = null;
+                }
+            }
+        }
+
+        // Pokreće vizuelnu animaciju mice — poziva se kada su novi redovi detektovani
+        function triggerMillAnim(newMills, player) {
+            if (!newMills || newMills.length === 0) return;
+            gameState.millAnim = { mills: newMills.map(m => m.slice()), player, startAt: Date.now() };
         }
 
         function checkMill(player) {
@@ -1791,6 +2179,11 @@
                     closeMillModal();
                     playSound('removed');
                     createExplosion(BOARD_POSITIONS[closestIndex]);
+                    if (gameState.phase === 'placement' &&
+                        gameState.piecesPlaced.red === 9 &&
+                        gameState.piecesPlaced.blue === 9) {
+                        gameState.phase = 'movement';
+                    }
                     switchPlayer();
                     checkGameOver();
                 }
@@ -1842,7 +2235,9 @@
                         const mills = checkMill(gameState.currentPlayer);
                         const newMills = mills.filter(m => !gameState.usedMills.includes(millKey(m)));
                         if (newMills.length > 0) {
+                            triggerMillAnim(newMills, gameState.currentPlayer);
                             sessionScores[gameState.currentPlayer] = (sessionScores[gameState.currentPlayer] || 0) + newMills.length;
+                            sessionMillCounts[gameState.currentPlayer] = (sessionMillCounts[gameState.currentPlayer] || 0) + newMills.length;
                             sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
                             updateScoreboardDisplay();
                             newMills.forEach(m => gameState.usedMills.push(millKey(m)));
@@ -1978,7 +2373,9 @@
             const mills = checkMill(player);
             const newMills = mills.filter(m => !gameState.usedMills.includes(millKey(m)));
             if (newMills.length > 0) {
+                triggerMillAnim(newMills, player);
                 sessionScores[player] = (sessionScores[player] || 0) + newMills.length;
+                sessionMillCounts[player] = (sessionMillCounts[player] || 0) + newMills.length;
                 sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
                 updateScoreboardDisplay();
                 newMills.forEach(m => gameState.usedMills.push(millKey(m)));
@@ -2041,7 +2438,7 @@
 
             document.getElementById('bluePhase').textContent = bluePhase;
             document.getElementById('redPhase').textContent = redPhase;
-            document.getElementById('scoreboard').textContent = `Bijeli: ${sessionScores.blue} | Crveni: ${sessionScores.red}`;
+            document.getElementById('scoreboard').textContent = `${playerNames.blue}: ${sessionScores.blue} | ${playerNames.red}: ${sessionScores.red}`;
 
             // NIVO: ZEMLJOTRES — earthquake countdown
             const quakeStatus = document.getElementById('quakeStatus');
@@ -2135,22 +2532,21 @@
 
             const message = document.getElementById('message');
             if (gameState.gameOver) {
-                message.innerHTML = `<span style="color: #c9a84c;">
-                    ${gameState.winner === 'blue' ? 'Bijeli' : 'Crveni'} igrač pobijedio!
-                </span>`;
+                message.innerHTML = `<span style="color: #c9a84c;">${playerNames[gameState.winner]} pobijedio!</span>`;
                 if (!gameState.scoreAdded) {
                     addWin(gameState.winner);
                     gameState.scoreAdded = true;
                 }
-            } else if (gameState.waitingForRemoval) {
+            } else if (gameState.waitingForRemoval &&
+                       (gameType !== 'vsai' || gameState.currentPlayer === 'blue')) {
+                // A human player formed a mill and must choose which opponent piece to remove
                 const removalPlayer = gameState.currentPlayer === 'blue' ? 'Bijeli' : 'Crveni';
-                message.textContent = `MICA — ${removalPlayer} bira protivnikov žeton`;
             } else if (gameType === 'vsai' && gameState.currentPlayer === 'red') {
                 message.textContent = 'AI razmišlja...';
             } else {
-                const player = gameState.currentPlayer === 'blue' ? 'Bijeli' : 'Crveni';
+                const player = playerNames[gameState.currentPlayer];
                 const phase = gameState.phase === 'placement' ? 'postavlja žeton' : 'pomjera žeton';
-                message.textContent = `${player} igrač ${phase}`;
+                message.textContent = `${player} ${phase}`;
             }
         }
 
@@ -2161,7 +2557,7 @@
         }
 
         function updateScoreboardDisplay() {
-            document.getElementById('scoreboard').textContent = `Bijeli: ${sessionScores.blue} | Crveni: ${sessionScores.red}`;
+            document.getElementById('scoreboard').textContent = `${playerNames.blue}: ${sessionScores.blue} | ${playerNames.red}: ${sessionScores.red}`;
         }
 
         function resetGame(manualReset = false) {
@@ -2173,6 +2569,7 @@
             // automatic rematch via rematch() passes no argument so manualReset stays false
             if (manualReset) {
                 sessionScores = { blue: 0, red: 0 };
+                sessionMillCounts = { blue: 0, red: 0 };
                 sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
             }
             initializeGame();
@@ -2215,6 +2612,9 @@
         }
 
         function showMillModal() {
+            // In vsai mode, never show the removal prompt when it is the AI's (red) turn.
+            // In local 1v1 mode both players are human so always show.
+            if (gameType === 'vsai' && gameState.currentPlayer === 'red') return;
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('millModal').classList.add('active');
         }
@@ -2229,15 +2629,21 @@
             if (!gameState.scoreAdded) {
                 addWin(winner);
                 gameState.scoreAdded = true;
-                // Increment session scoreboard by 1 win — never reset between rematches
                 sessionScores[winner] = (sessionScores[winner] || 0) + 1;
                 sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
                 updateScoreboardDisplay();
             }
-            const name = winner === 'blue' ? 'Bijeli igrač' : 'Crveni igrač';
+            const name = playerNames[winner];
             document.getElementById('gameOverMessage').textContent = `${name} pobijedio!`;
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('gameOverModal').classList.add('active');
+            const diffSec = document.getElementById('aiDifficultySection');
+            if (diffSec) diffSec.style.display = (gameType === 'vsai') ? 'block' : 'none';
+            ['easy','medium','hard'].forEach(d => {
+                const b = document.getElementById('diff-' + d);
+                if (b) b.classList.toggle('diff-active', d === aiDifficulty);
+            });
+            startConfetti();
         }
 
         function closeGameOverModal() {
@@ -2516,9 +2922,10 @@
                         updateUI();
                         // Custom message: both scored
                         const gom = document.getElementById('gameOverMessage');
-                        if (gom) gom.textContent = 'Obojica formirali micu! Bijeli +1, Crveni +1';
+                        if (gom) gom.textContent = `Obojica formirali micu! ${playerNames.blue} +1, ${playerNames.red} +1`;
                         document.getElementById('modalOverlay').classList.add('active');
                         document.getElementById('gameOverModal').classList.add('active');
+                        startConfetti();
                     } else {
                         const winner = blueMill ? 'blue' : 'red';
                         // Earthquake mill → +2 bonus
@@ -2528,11 +2935,11 @@
                         gameState.winner = winner;
                         drawBoard();
                         updateUI();
-                        const name = winner === 'blue' ? 'Bijeli igrač' : 'Crveni igrač';
                         const gom = document.getElementById('gameOverMessage');
-                        if (gom) gom.textContent = `${name} pobijedio — Zemljotres mica! +2 boda`;
+                        if (gom) gom.textContent = `${playerNames[winner]} pobijedio — Zemljotres mica! +2 boda`;
                         document.getElementById('modalOverlay').classList.add('active');
                         document.getElementById('gameOverModal').classList.add('active');
+                        startConfetti();
                     }
                     updateScoreboardDisplay();
                     return;
@@ -2959,13 +3366,17 @@
             if (gameState.gameOver || gameState.currentPlayer !== 'red') return;
             if (gameState.waitingForRemoval) {
                 processAIRemoval('blue');
+                // Refresh UI immediately so no stale message lingers while the 1s timeout runs
+                drawBoard();
+                updateUI();
                 return;
             }
 
             const opponent = 'blue';
             if (gameState.phase === 'placement') {
                 // LEVEL: TEMPIRANA BOMBA / NIVO: MAGLA RATA / NIVO: PORTAL / NIVO: ROTIRAJUĆA TABLA / NIVO: ZEMLJOTRES
-                const moveIndex = (gameMode === 'bomb')       ? aiChoosePlacementBomb()       :
+                const moveIndex = aiDifficulty === 'easy' ? aiChoosePlacementEasy() :
+                                  (gameMode === 'bomb')       ? aiChoosePlacementBomb()       :
                                   (gameMode === 'fog')        ? aiChoosePlacementFog()        :
                                   (gameMode === 'portal')     ? aiChoosePlacementPortal()     :
                                   (gameMode === 'rotation')   ? aiChoosePlacementRotation()   :
@@ -2979,6 +3390,7 @@
                         gameState.piecesPlaced.red++;
                         gameState.piecesOnBoard.red++;
                         checkPortalBonus('red'); // NIVO: PORTAL
+                        gameState.aiLastMove = { index: moveIndex, expiresAt: Date.now() + 1500 };
                     }
                     playSound('placed');
                     createPlacementAnimation(BOARD_POSITIONS[moveIndex]);
@@ -2990,7 +3402,6 @@
                         updateScoreboardDisplay();
                         newMills.forEach(m => gameState.usedMills.push(millKey(m)));
                         gameState.waitingForRemoval = true;
-                        showMillModal();
                         playSound('mill');
                         processAIRemoval('blue');
                     } else {
@@ -3005,12 +3416,10 @@
                     const removable = getRemovablePieces(opponent);
                     const target = aiChooseRemoval(opponent);
                     if (target !== -1) {
-                        document.getElementById('message').textContent = 'AI uklanja tvoj žeton...';
                         setTimeout(() => {
                             gameState.board[target] = null;
                             gameState.piecesOnBoard.blue--;
                             gameState.waitingForRemoval = false;
-                            closeMillModal();
                             playSound('removed');
                             createExplosion(BOARD_POSITIONS[target]);
                             switchPlayer();
@@ -3020,7 +3429,9 @@
                     }
                 } else {
                     // LEVEL: TEMPIRANA BOMBA / NIVO: MAGLA RATA / NIVO: PORTAL / NIVO: ROTIRAJUĆA TABLA / NIVO: ZEMLJOTRES
-                    const move = (gameMode === 'bomb')       ? aiChooseMovementBomb()       :
+                    const move = aiDifficulty === 'easy' ? aiChooseMovementEasy() :
+                                 (aiDifficulty === 'hard' && gameMode === 'classic') ? aiChooseMovementHard() :
+                                 (gameMode === 'bomb')       ? aiChooseMovementBomb()       :
                                  (gameMode === 'fog')        ? aiChooseMovementFog()        :
                                  (gameMode === 'portal')     ? aiChooseMovementPortal()     :
                                  (gameMode === 'rotation')   ? aiChooseMovementRotation()   :
@@ -3031,6 +3442,7 @@
                         gameState.board[move.from] = null;
                         gameState.board[move.to] = 'red';
                         checkPortalBonus('red'); // NIVO: PORTAL
+                        gameState.aiLastMove = { index: move.to, expiresAt: Date.now() + 1500 };
                         playSound('placed');
                         // NIVO: PORTAL — detect AI teleport jump and start animation
                         if (gameMode === 'portal') {
@@ -3056,7 +3468,6 @@
                             updateScoreboardDisplay();
                             newMills.forEach(m => gameState.usedMills.push(millKey(m)));
                             gameState.waitingForRemoval = true;
-                            showMillModal();
                             playSound('mill');
                             processAIRemoval('blue');
                         } else {
@@ -3132,14 +3543,19 @@
             if (!gameState.waitingForRemoval || gameState.currentPlayer !== 'red') return;
             const target = aiChooseRemoval(opponent);
             if (target === -1) return;
-            document.getElementById('message').textContent = 'AI uklanja tvoj žeton...';
+            gameState.aiRemovalHighlight = { index: target, expiresAt: Date.now() + 800 };
             setTimeout(() => {
+                gameState.aiRemovalHighlight = null;
                 gameState.board[target] = null;
                 gameState.piecesOnBoard[opponent] = Math.max(0, (gameState.piecesOnBoard[opponent] || 0) - 1);
                 gameState.waitingForRemoval = false;
-                closeMillModal();
                 playSound('removed');
                 createExplosion(BOARD_POSITIONS[target]);
+                if (gameState.phase === 'placement' &&
+                    gameState.piecesPlaced.red === 9 &&
+                    gameState.piecesPlaced.blue === 9) {
+                    gameState.phase = 'movement';
+                }
                 switchPlayer();
                 drawBoard();
                 updateUI();
@@ -3235,38 +3651,61 @@
             leaderboardData = stored ? JSON.parse(stored) : [];
         }
 
-        function addWin(player) {
-            const playerName = localStorage.getItem('playerName') || 'Anonimni igrač';
-            let entry = leaderboardData.find(e => e.name === playerName);
-            
+        function addWin(winner) {
+            const winnerName = playerNames[winner];
+            let entry = leaderboardData.find(e => e.name === winnerName);
             if (!entry) {
-                entry = { name: playerName, wins: 0, games: 0 };
+                entry = { name: winnerName, wins: 0, games: 0, mills: 0 };
                 leaderboardData.push(entry);
             }
-            
             entry.wins++;
             entry.games++;
+            entry.mills = (entry.mills || 0) + (sessionMillCounts[winner] || 0);
+
+            if (gameType === 'local') {
+                const loser = winner === 'blue' ? 'red' : 'blue';
+                const loserName = playerNames[loser];
+                let loserEntry = leaderboardData.find(e => e.name === loserName);
+                if (!loserEntry) {
+                    loserEntry = { name: loserName, wins: 0, games: 0, mills: 0 };
+                    leaderboardData.push(loserEntry);
+                }
+                loserEntry.games++;
+                loserEntry.mills = (loserEntry.mills || 0) + (sessionMillCounts[loser] || 0);
+            }
+
             leaderboardData.sort((a, b) => b.wins - a.wins);
             localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
-            
-            // do NOT increment session mill-score here; sessionScores are per-mill and handled elsewhere
 
             const credits = parseInt(localStorage.getItem('aiCredits') || '10');
             localStorage.setItem('aiCredits', (credits + 3).toString());
         }
 
         function showRankingAlert() {
-            alert('Tabela rejtinga — uskoro dostupno!');
+            toggleLeaderboard();
+        }
+
+        function openLeaderboardFromMenu() {
+            _leaderboardFromMenu = true;
+            document.getElementById('startScreen').classList.remove('active');
+            updateLeaderboardDisplay();
+            document.getElementById('leaderboardScreen').classList.add('active');
         }
 
         function toggleLeaderboard() {
             const leaderboardScreen = document.getElementById('leaderboardScreen');
             const gameScreen = document.getElementById('gameScreen');
-            
+
             if (leaderboardScreen.classList.contains('active')) {
                 leaderboardScreen.classList.remove('active');
-                gameScreen.classList.add('active');
+                if (_leaderboardFromMenu) {
+                    _leaderboardFromMenu = false;
+                    document.getElementById('startScreen').classList.add('active');
+                } else {
+                    gameScreen.classList.add('active');
+                }
             } else {
+                _leaderboardFromMenu = false;
                 updateLeaderboardDisplay();
                 leaderboardScreen.classList.add('active');
                 gameScreen.classList.remove('active');
@@ -3276,56 +3715,212 @@
         function updateLeaderboardDisplay() {
             const tbody = document.getElementById('leaderboardBody');
             tbody.innerHTML = '';
-            
+
+            if (leaderboardData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888888;padding:24px;">Još nema rezultata</td></tr>';
+                return;
+            }
+
             leaderboardData.slice(0, 10).forEach((entry, index) => {
-                const winRate = (entry.wins / entry.games * 100).toFixed(1);
                 const row = document.createElement('tr');
-                row.className = `rank-${index + 1}`;
+                row.className = index < 3 ? `rank-${index + 1}` : '';
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${entry.name}</td>
                     <td>${entry.wins}</td>
+                    <td>${entry.mills || 0}</td>
                     <td>${entry.games}</td>
-                    <td>${winRate}%</td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
+        function clearLeaderboard() {
+            leaderboardData = [];
+            localStorage.removeItem('leaderboard');
+            updateLeaderboardDisplay();
+        }
+
         // ===== POSTAVKE =====
-        function openSettings() {
-            document.getElementById('modalOverlay').classList.add('active');
-            document.getElementById('settingsModal').classList.add('active');
-            document.getElementById('apiKey').value = localStorage.getItem('anthropicApiKey') || '';
-            document.getElementById('playerName').value = localStorage.getItem('playerName') || '';
-        }
-
-        function closeSettings() {
-            document.getElementById('modalOverlay').classList.remove('active');
-            document.getElementById('settingsModal').classList.remove('active');
-        }
-
-        function saveSettings() {
-            const apiKey = document.getElementById('apiKey').value;
-            const playerName = document.getElementById('playerName').value || 'Anonimni igrač';
-            
-            localStorage.setItem('anthropicApiKey', apiKey);
-            localStorage.setItem('playerName', playerName);
-            
-            const lastLogin = localStorage.getItem('lastLogin');
-            const today = new Date().toDateString();
-            if (lastLogin !== today) {
-                const credits = parseInt(localStorage.getItem('aiCredits') || '10');
-                localStorage.setItem('aiCredits', (credits + 2).toString());
-                localStorage.setItem('lastLogin', today);
-            }
-            
-            closeSettings();
-        }
-
         function loadSettings() {
             const credits = localStorage.getItem('aiCredits') || '10';
             document.getElementById('credits').textContent = credits;
+        }
+
+        // ===== VS AI TEŽINA =====
+        function selectDifficulty(level) {
+            aiDifficulty = level;
+            ['easy', 'medium', 'hard'].forEach(d => {
+                const b = document.getElementById('sel-' + d);
+                if (b) b.classList.toggle('diff-sel-active', d === level);
+            });
+            const descs = {
+                easy:   'AI bira nasumične poteze — idealno za početnike',
+                medium: 'Uravnotežen AI koji reaguje na prijetnje i blokira micu',
+                hard:   'AI gleda 3 poteza unaprijed — minimax strategija'
+            };
+            const dd = document.getElementById('diffDescription');
+            if (dd) dd.textContent = descs[level] || '';
+        }
+
+        function startVsAIWithDifficulty() {
+            const name = localStorage.getItem('micaPlayerName') || 'Bijeli';
+            playerNames = { blue: name, red: 'Crveni' };
+            document.getElementById('difficultyOverlay').style.display = 'none';
+            startGame('classic', 'vsai');
+        }
+
+        function goBackFromVsAIDifficulty() {
+            document.getElementById('difficultyOverlay').style.display = 'none';
+        }
+
+        // ===== PROFIL IGRAČA =====
+        function updateProfileBtn() {
+            const name = localStorage.getItem('micaPlayerName') || 'Bijeli';
+            const btn = document.getElementById('profileBtn');
+            if (!btn) return;
+            btn.textContent = name.trim().substring(0, 2).toUpperCase() || 'B';
+            btn.title = name;
+        }
+
+        function openProfileModal() {
+            document.getElementById('profileNameInput').value = localStorage.getItem('micaPlayerName') || '';
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('profileModal').classList.add('active');
+            setTimeout(() => { const i = document.getElementById('profileNameInput'); if(i) i.focus(); }, 60);
+        }
+
+        function saveProfileName() {
+            const name = document.getElementById('profileNameInput').value.trim() || 'Bijeli';
+            localStorage.setItem('micaPlayerName', name);
+            updateProfileBtn();
+            closeProfileModal();
+        }
+
+        function closeProfileModal() {
+            const el = document.getElementById('profileModal');
+            if (!el) return;
+            el.classList.remove('active');
+            const ol = document.getElementById('modalOverlay');
+            if (ol && !document.querySelector('.modal.active:not(#profileModal)')) {
+                ol.classList.remove('active');
+            }
+        }
+
+        // ===== KONFETI =====
+        function startConfetti() {
+            if (!confettiCanvas || !confettiCtx) return;
+            confettiCanvas.width  = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+            confettiCanvas.style.display = 'block';
+            confettiParticles = [];
+            confettiEndTime = Date.now() + 3000;
+            const colors = ['#c9a84c','#f0f0f0','#8b1a1a','#e8c970','#ffffff','#d4af57'];
+            for (let i = 0; i < 130; i++) {
+                confettiParticles.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: -20 - Math.random() * confettiCanvas.height * 0.4,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: 1.8 + Math.random() * 3.5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    w: 5 + Math.random() * 9,
+                    h: 2 + Math.random() * 5,
+                    rot: Math.random() * Math.PI * 2,
+                    rotV: (Math.random() - 0.5) * 0.13
+                });
+            }
+            drawConfetti();
+        }
+
+        function drawConfetti() {
+            if (!confettiCanvas || !confettiCtx) return;
+            if (Date.now() >= confettiEndTime) {
+                confettiParticles = [];
+                confettiCanvas.style.display = 'none';
+                return;
+            }
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiParticles.forEach(p => {
+                p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
+                if (p.y > confettiCanvas.height + 20) { p.y = -20; p.x = Math.random() * confettiCanvas.width; }
+                confettiCtx.save();
+                confettiCtx.translate(p.x, p.y);
+                confettiCtx.rotate(p.rot);
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                confettiCtx.restore();
+            });
+            requestAnimationFrame(drawConfetti);
+        }
+
+        // ===== AI TEŽINA =====
+        function setAIDifficulty(level) {
+            aiDifficulty = level;
+            ['easy','medium','hard'].forEach(d => {
+                const b = document.getElementById('diff-' + d);
+                if (b) b.classList.toggle('diff-active', d === level);
+            });
+        }
+
+        function aiChoosePlacementEasy() {
+            const empty = BOARD_POSITIONS.map((_, i) => i).filter(i => gameState.board[i] === null);
+            return empty[Math.floor(Math.random() * empty.length)] ?? -1;
+        }
+
+        function aiChooseMovementEasy() {
+            const redPieces = BOARD_POSITIONS.map((_, i) => i).filter(i => gameState.board[i] === 'red');
+            const all = [];
+            for (const from of redPieces) getValidMoveTargets(from, 'red').forEach(to => all.push({ from, to }));
+            return all[Math.floor(Math.random() * all.length)] || null;
+        }
+
+        function scoreBoardMinimax() {
+            const rc = gameState.piecesOnBoard.red, bc = gameState.piecesOnBoard.blue;
+            if (rc < 3 && gameState.phase === 'movement') return -1000;
+            if (bc < 3 && gameState.phase === 'movement') return 1000;
+            const rm = MILL_LINES.filter(m => m.every(i => gameState.board[i] === 'red')).length;
+            const bm = MILL_LINES.filter(m => m.every(i => gameState.board[i] === 'blue')).length;
+            const rt = MILL_LINES.filter(m => m.filter(i => gameState.board[i] === 'red').length === 2 && m.some(i => gameState.board[i] === null)).length;
+            const bt = MILL_LINES.filter(m => m.filter(i => gameState.board[i] === 'blue').length === 2 && m.some(i => gameState.board[i] === null)).length;
+            return (rc - bc) * 10 + (rm - bm) * 20 + (rt - bt) * 5;
+        }
+
+        function minimaxAB(depth, isMax, alpha, beta) {
+            const s = scoreBoardMinimax();
+            if (depth === 0 || Math.abs(s) >= 1000) return s;
+            const player = isMax ? 'red' : 'blue';
+            const pieces = BOARD_POSITIONS.map((_, i) => i).filter(i => gameState.board[i] === player);
+            let best = isMax ? -Infinity : Infinity;
+            let pruned = false;
+            for (const from of pieces) {
+                if (pruned) break;
+                for (const to of getValidMoveTargets(from, player)) {
+                    gameState.board[from] = null; gameState.board[to] = player;
+                    const v = minimaxAB(depth - 1, !isMax, alpha, beta);
+                    gameState.board[from] = player; gameState.board[to] = null;
+                    if (isMax) { if (v > best) best = v; if (best > alpha) alpha = best; }
+                    else       { if (v < best) best = v; if (best < beta)  beta  = best; }
+                    if (alpha >= beta) { pruned = true; break; }
+                }
+            }
+            return best === -Infinity || best === Infinity ? scoreBoardMinimax() : best;
+        }
+
+        function aiChooseMovementHard() {
+            const redPieces = BOARD_POSITIONS.map((_, i) => i).filter(i => gameState.board[i] === 'red');
+            for (const from of redPieces)
+                for (const to of getValidMoveTargets(from, 'red'))
+                    if (wouldFormMillAfterMove('red', from, to)) return { from, to };
+            let bestMove = null, bestScore = -Infinity;
+            for (const from of redPieces) {
+                for (const to of getValidMoveTargets(from, 'red')) {
+                    gameState.board[from] = null; gameState.board[to] = 'red';
+                    const s = minimaxAB(2, false, -Infinity, Infinity);
+                    gameState.board[from] = 'red'; gameState.board[to] = null;
+                    if (s > bestScore) { bestScore = s; bestMove = { from, to }; }
+                }
+            }
+            return bestMove || aiChooseMovement();
         }
 
         // Animation loop — started inside window.onload after ctx is initialised
