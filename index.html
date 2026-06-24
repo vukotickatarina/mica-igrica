@@ -2320,6 +2320,21 @@
                 showGameOverModal('blue');
                 return;
             }
+            // Blokiranje: provjeri da li igrač čiji je potez ima ijedan validan potez.
+            // Faza letenja (piecesOnBoard <= 3) se preskače — tamo igrač uvijek može ići.
+            const current = gameState.currentPlayer;
+            if (gameState.piecesOnBoard[current] > 3) {
+                const pieces = BOARD_POSITIONS.map((_, i) => i).filter(i => gameState.board[i] === current);
+                const hasMove = pieces.some(from => getValidMoveTargets(from, current).length > 0);
+                if (!hasMove) {
+                    const winner = current === 'blue' ? 'red' : 'blue';
+                    gameState.gameOver = true;
+                    gameState.winner = winner;
+                    showGameOverModal(winner);
+                    document.getElementById('gameOverMessage').textContent =
+                        `${playerNames[current]} je blokiran! ${playerNames[winner]} pobjeđuje!`;
+                }
+            }
         }
 
         function updateTrayUI() {
