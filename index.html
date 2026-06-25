@@ -1237,15 +1237,16 @@
         <table class="leaderboard-table">
             <thead>
                 <tr>
-                    <th>Mjesto</th>
+                    <th>#</th>
                     <th>Igrač</th>
                     <th>Pobjede</th>
+                    <th>Porazi</th>
                     <th>Mice</th>
-                    <th>Partije</th>
+                    <th>Win%</th>
                 </tr>
             </thead>
             <tbody id="leaderboardBody">
-                <tr><td colspan="5" style="text-align: center; color: #888888; padding: 24px;">Još nema rezultata</td></tr>
+                <tr><td colspan="6" style="text-align: center; color: #888888; padding: 24px;">Još nema rezultata</td></tr>
             </tbody>
         </table>
         <div style="display:flex; gap:10px;">
@@ -1510,7 +1511,10 @@
                 scoreAdded: false,
                 explodingBombs: [],
                 aiLastMove: null,
-                aiRemovalHighlight: null
+                aiRemovalHighlight: null,
+                quakeRemovals: 0,
+                quakeMillQueue: [],
+                quakeRealPlayer: null
             };
 
             if (gameMode === 'bomb') {
@@ -1575,8 +1579,10 @@
 
         function startLevelVsAI() {
             pendingGameType = 'vsai';
+            playerNames.blue = localStorage.getItem('micaPlayerName') || playerNames.blue || 'Bijeli';
             document.getElementById('levelModeOverlay').style.display = 'none';
-            showInstructions(pendingGameMode);
+            document.getElementById('difficultyOverlay').style.display = 'flex';
+            selectDifficulty(aiDifficulty);
         }
 
         function startLevel1v1() {
@@ -2188,18 +2194,31 @@
                 if (removable.includes(closestIndex)) {
                     gameState.board[closestIndex] = null;
                     gameState.piecesOnBoard[opponent]--;
-                    gameState.waitingForRemoval = false;
                     gameState.selectedPiece = null;
-                    closeMillModal();
                     playSound('removed');
                     createExplosion(BOARD_POSITIONS[closestIndex]);
-                    if (gameState.phase === 'placement' &&
-                        gameState.piecesPlaced.red === 9 &&
-                        gameState.piecesPlaced.blue === 9) {
-                        gameState.phase = 'movement';
+                    if (gameState.quakeRemovals > 0) {
+                        // Uklanjanje žetona zbog zemljotres mice
+                        gameState.quakeRemovals--;
+                        if (gameState.quakeRemovals > 0) {
+                            // Još žetona za ukloniti — ostajemo u removal modu
+                        } else {
+                            // Ovaj igrač završio — provjeri sljedećeg u redu
+                            gameState.waitingForRemoval = false;
+                            startNextQuakeRemoval();
+                        }
+                    } else {
+                        // Normalno uklanjanje (ne-zemljotres)
+                        gameState.waitingForRemoval = false;
+                        closeMillModal();
+                        if (gameState.phase === 'placement' &&
+                            gameState.piecesPlaced.red === 9 &&
+                            gameState.piecesPlaced.blue === 9) {
+                            gameState.phase = 'movement';
+                        }
+                        switchPlayer();
+                        checkGameOver();
                     }
-                    switchPlayer();
-                    checkGameOver();
                 }
                 drawBoard();
                 updateUI();
@@ -2568,8 +2587,12 @@
                 }
             } else if (gameState.waitingForRemoval &&
                        (gameType !== 'vsai' || gameState.currentPlayer === 'blue')) {
-                // A human player formed a mill and must choose which opponent piece to remove
-                const removalPlayer = gameState.currentPlayer === 'blue' ? 'Bijeli' : 'Crveni';
+                if (gameState.quakeRemovals > 0) {
+                    const n = gameState.quakeRemovals;
+                    message.textContent = `🌍 ${playerNames[gameState.currentPlayer]} — ukloni ${n} protivnikov${n > 1 ? 'a' : ''} žeton${n > 1 ? 'a' : ''}!`;
+                } else {
+                    message.textContent = `${playerNames[gameState.currentPlayer]} — odaberi protivnikov žeton`;
+                }
             } else if (gameType === 'vsai' && gameState.currentPlayer === 'red') {
                 message.textContent = 'AI razmišlja...';
             } else {
@@ -2934,43 +2957,34 @@
                 applyEarthquake();
                 gameState.quakingNow = false;
 
-                // NIVO: ZEMLJOTRES — check for mills created by the earthquake
-                // Rules: single winner → +2; simultaneous mill for both → +1 each; normal mill → +1
-                const blueMill = checkMill('blue').some(m => !gameState.usedMills.includes(millKey(m)));
-                const redMill  = checkMill('red').some(m => !gameState.usedMills.includes(millKey(m)));
-                if (blueMill || redMill) {
-                    gameState.gameOver = true;
-                    if (blueMill && redMill) {
-                        // Both formed mills simultaneously → +1 each
-                        sessionScores['blue'] = (sessionScores['blue'] || 0) + 1;
-                        sessionScores['red']  = (sessionScores['red']  || 0) + 1;
-                        sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
-                        gameState.scoreAdded = true;
-                        gameState.winner = 'blue'; // arbitrary for display; message overridden below
-                        drawBoard();
-                        updateUI();
-                        // Custom message: both scored
-                        const gom = document.getElementById('gameOverMessage');
-                        if (gom) gom.textContent = `Obojica formirali micu! ${playerNames.blue} +1, ${playerNames.red} +1`;
-                        document.getElementById('modalOverlay').classList.add('active');
-                        document.getElementById('gameOverModal').classList.add('active');
-                        startConfetti();
-                    } else {
-                        const winner = blueMill ? 'blue' : 'red';
-                        // Earthquake mill → +2 bonus
-                        sessionScores[winner] = (sessionScores[winner] || 0) + 2;
-                        sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
-                        gameState.scoreAdded = true;
-                        gameState.winner = winner;
-                        drawBoard();
-                        updateUI();
-                        const gom = document.getElementById('gameOverMessage');
-                        if (gom) gom.textContent = `${playerNames[winner]} pobijedio — Zemljotres mica! +2 boda`;
-                        document.getElementById('modalOverlay').classList.add('active');
-                        document.getElementById('gameOverModal').classList.add('active');
-                        startConfetti();
+                // NIVO: ZEMLJOTRES — mica od potresa daje +2 boda, ne završava igru
+                const blueQuakeMills = checkMill('blue').filter(m => !gameState.usedMills.includes(millKey(m)));
+                const redQuakeMills  = checkMill('red').filter(m => !gameState.usedMills.includes(millKey(m)));
+                if (blueQuakeMills.length > 0 || redQuakeMills.length > 0) {
+                    blueQuakeMills.forEach(m => gameState.usedMills.push(millKey(m)));
+                    redQuakeMills.forEach(m => gameState.usedMills.push(millKey(m)));
+                    const animMills = [...blueQuakeMills, ...redQuakeMills];
+                    triggerMillAnim(animMills, blueQuakeMills.length > 0 ? 'blue' : 'red');
+                    if (blueQuakeMills.length > 0) {
+                        sessionScores['blue'] = (sessionScores['blue'] || 0) + 2;
+                        sessionMillCounts['blue'] = (sessionMillCounts['blue'] || 0) + blueQuakeMills.length;
                     }
+                    if (redQuakeMills.length > 0) {
+                        sessionScores['red'] = (sessionScores['red'] || 0) + 2;
+                        sessionMillCounts['red'] = (sessionMillCounts['red'] || 0) + redQuakeMills.length;
+                    }
+                    sessionStorage.setItem('micaSessionScores', JSON.stringify(sessionScores));
                     updateScoreboardDisplay();
+                    drawBoard();
+                    updateUI();
+                    setTimeout(() => {
+                        // Postavi red za uklanjanje (igrač koji je sklopio micu uklanja 2 žetona)
+                        gameState.quakeRealPlayer = gameState.currentPlayer;
+                        gameState.quakeMillQueue = [];
+                        if (blueQuakeMills.length > 0) gameState.quakeMillQueue.push('blue');
+                        if (redQuakeMills.length > 0) gameState.quakeMillQueue.push('red');
+                        startNextQuakeRemoval();
+                    }, 1500);
                     return;
                 }
 
@@ -2980,7 +2994,7 @@
 
                 if (!gameState.gameOver && gameType === 'vsai' &&
                     gameState.currentPlayer === 'red' && !gameState.waitingForRemoval) {
-                    scheduleAIMove();
+                    setTimeout(() => scheduleAIMove(), 1500);
                 }
             }, 620);
         }
@@ -3097,14 +3111,16 @@
                     return !parts.some(n => MIDDLE_RING_CW.includes(n));
                 });
 
-                // Check if rotation formed a mill → immediate win
+                // Check if rotation formed a mill → animate first, then show modal
                 const winner = checkMillsAfterRotation();
                 if (winner) {
                     gameState.gameOver = true;
                     gameState.winner = winner;
+                    const rotMills = checkMill(winner).filter(m => !gameState.usedMills.includes(millKey(m)));
+                    triggerMillAnim(rotMills.length ? rotMills : checkMill(winner), winner);
                     drawBoard();
                     updateUI();
-                    showGameOverModal(winner);
+                    setTimeout(() => { showGameOverModal(winner); }, 2000);
                     return;
                 }
 
@@ -3681,33 +3697,41 @@
         }
 
         function addWin(winner) {
-            const winnerName = gameType === 'vsai'
-                ? (winner === 'red' ? 'Računar' : (localStorage.getItem('micaPlayerName') || playerNames.blue || 'Bijeli'))
-                : playerNames[winner];
-            let entry = leaderboardData.find(e => e.name === winnerName);
-            if (!entry) {
-                entry = { name: winnerName, wins: 0, games: 0, mills: 0 };
-                leaderboardData.push(entry);
-            }
-            entry.wins++;
-            entry.games++;
-            entry.mills = (entry.mills || 0) + (sessionMillCounts[winner] || 0);
+            const loser = winner === 'blue' ? 'red' : 'blue';
 
-            if (gameType === 'local') {
-                const loser = winner === 'blue' ? 'red' : 'blue';
-                const loserName = playerNames[loser];
-                let loserEntry = leaderboardData.find(e => e.name === loserName);
-                if (!loserEntry) {
-                    loserEntry = { name: loserName, wins: 0, games: 0, mills: 0 };
-                    leaderboardData.push(loserEntry);
+            function upsert(name) {
+                if (!name || name === 'Računar') return null;
+                let e = leaderboardData.find(x => x.name === name);
+                if (!e) { e = { name, wins: 0, losses: 0, mills: 0 }; leaderboardData.push(e); }
+                if (!e.losses) e.losses = 0; // migrate old entries
+                return e;
+            }
+
+            if (gameType === 'vsai') {
+                // AI nikad u tabeli — samo ljudski igrač (plavi)
+                const humanName = localStorage.getItem('micaPlayerName') || playerNames.blue || 'Bijeli';
+                const human = upsert(humanName);
+                if (human) {
+                    if (winner === 'blue') { human.wins++;             } else { human.losses++; }
+                    human.mills = (human.mills || 0) + (sessionMillCounts['blue'] || 0);
                 }
-                loserEntry.games++;
-                loserEntry.mills = (loserEntry.mills || 0) + (sessionMillCounts[loser] || 0);
+            } else {
+                // 1v1: pobjednik dobija win, gubitnik dobija poraz
+                const winEntry  = upsert(playerNames[winner]);
+                const loseEntry = upsert(playerNames[loser]);
+                if (winEntry)  { winEntry.wins++;  winEntry.mills  = (winEntry.mills  || 0) + (sessionMillCounts[winner] || 0); }
+                if (loseEntry) { loseEntry.losses++; loseEntry.mills = (loseEntry.mills || 0) + (sessionMillCounts[loser]  || 0); }
             }
 
-            leaderboardData.sort((a, b) => b.wins - a.wins);
-            localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
+            leaderboardData.sort((a, b) => {
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                const at = a.wins + (a.losses || 0), bt = b.wins + (b.losses || 0);
+                const ap = at > 0 ? a.wins / at : 0, bp = bt > 0 ? b.wins / bt : 0;
+                if (bp !== ap) return bp - ap;
+                return (b.mills || 0) - (a.mills || 0);
+            });
 
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
             const credits = parseInt(localStorage.getItem('aiCredits') || '10');
             localStorage.setItem('aiCredits', (credits + 3).toString());
         }
@@ -3748,19 +3772,23 @@
             tbody.innerHTML = '';
 
             if (leaderboardData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888888;padding:24px;">Još nema rezultata</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888888;padding:24px;">Još nema rezultata</td></tr>';
                 return;
             }
 
             leaderboardData.slice(0, 10).forEach((entry, index) => {
+                const losses = entry.losses || 0;
+                const total  = entry.wins + losses;
+                const pct    = total > 0 ? Math.round(entry.wins / total * 100) + '%' : '—';
                 const row = document.createElement('tr');
                 row.className = index < 3 ? `rank-${index + 1}` : '';
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${entry.name}</td>
                     <td>${entry.wins}</td>
+                    <td>${losses}</td>
                     <td>${entry.mills || 0}</td>
-                    <td>${entry.games}</td>
+                    <td>${pct}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -3798,7 +3826,11 @@
             const name = localStorage.getItem('micaPlayerName') || 'Bijeli';
             playerNames = { blue: name, red: 'Crveni' };
             document.getElementById('difficultyOverlay').style.display = 'none';
-            startGame('classic', 'vsai');
+            if (pendingGameMode && pendingGameMode !== 'classic') {
+                showInstructions(pendingGameMode);
+            } else {
+                startGame('classic', 'vsai');
+            }
         }
 
         function goBackFromVsAIDifficulty() {
@@ -3836,6 +3868,84 @@
             if (ol && !document.querySelector('.modal.active:not(#profileModal)')) {
                 ol.classList.remove('active');
             }
+        }
+
+        // ===== ZEMLJOTRES — UKLANJANJE ŽETONA NAKON MICE =====
+
+        function startNextQuakeRemoval() {
+            if (!gameState.quakeMillQueue || gameState.quakeMillQueue.length === 0) {
+                // Svi igrači su završili uklanjanje — nastavi igru
+                gameState.waitingForRemoval = false;
+                gameState.quakeRemovals = 0;
+                gameState.currentPlayer = gameState.quakeRealPlayer || gameState.currentPlayer;
+                gameState.quakeRealPlayer = null;
+                drawBoard();
+                updateUI();
+                checkGameOver();
+                if (!gameState.gameOver && gameType === 'vsai' &&
+                    gameState.currentPlayer === 'red' && !gameState.waitingForRemoval) {
+                    setTimeout(() => scheduleAIMove(), 1500);
+                }
+                return;
+            }
+
+            const remover = gameState.quakeMillQueue.shift();
+            gameState.currentPlayer = remover;
+            gameState.quakeRemovals = 2;
+            gameState.waitingForRemoval = true;
+            gameState.selectedPiece = null;
+            drawBoard();
+            updateUI();
+
+            // Ako je AI na redu za uklanjanje, odradi automatski
+            if (gameType === 'vsai' && remover === 'red') {
+                const opponent = 'blue';
+                setTimeout(() => processQuakeAIRemovals(opponent), 600);
+            }
+        }
+
+        function processQuakeAIRemovals(opponent) {
+            if (!gameState.waitingForRemoval || gameState.quakeRemovals <= 0) return;
+
+            const target1 = aiChooseRemoval(opponent);
+            if (target1 === -1) { gameState.quakeRemovals = 0; startNextQuakeRemoval(); return; }
+
+            gameState.aiRemovalHighlight = { index: target1, expiresAt: Date.now() + 800 };
+            drawBoard(); updateUI();
+
+            setTimeout(() => {
+                gameState.aiRemovalHighlight = null;
+                gameState.board[target1] = null;
+                gameState.piecesOnBoard[opponent] = Math.max(0, gameState.piecesOnBoard[opponent] - 1);
+                gameState.quakeRemovals--;
+                playSound('removed');
+                createExplosion(BOARD_POSITIONS[target1]);
+                drawBoard(); updateUI();
+
+                if (gameState.quakeRemovals > 0) {
+                    // Drugi žeton
+                    const target2 = aiChooseRemoval(opponent);
+                    if (target2 === -1) { gameState.quakeRemovals = 0; startNextQuakeRemoval(); return; }
+
+                    gameState.aiRemovalHighlight = { index: target2, expiresAt: Date.now() + 800 };
+                    drawBoard(); updateUI();
+
+                    setTimeout(() => {
+                        gameState.aiRemovalHighlight = null;
+                        gameState.board[target2] = null;
+                        gameState.piecesOnBoard[opponent] = Math.max(0, gameState.piecesOnBoard[opponent] - 1);
+                        gameState.quakeRemovals--;
+                        playSound('removed');
+                        createExplosion(BOARD_POSITIONS[target2]);
+                        gameState.waitingForRemoval = false;
+                        drawBoard(); updateUI();
+                        startNextQuakeRemoval();
+                    }, 1000);
+                } else {
+                    gameState.waitingForRemoval = false;
+                    startNextQuakeRemoval();
+                }
+            }, 1000);
         }
 
         // ===== KONFETI =====
